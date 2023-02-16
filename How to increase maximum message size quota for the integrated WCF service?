@@ -1,0 +1,27 @@
+# Problem
+How to increase maximum message size quota for the integrated WCF service?
+
+# Environment
+Visual Studio 2022, Asp.Net Core 6.0, C#, MVC
+
+# How you fix it
+While working with WCF services, the error related to maximum message size usually appears when the WCF service return records more than the specified limit. To fix this error you need to increase MaxReceivedMessageSize.
+
+# Solution
+Add the following line of code in your web.config file and remove the previous binding for that specific WCF service if already exists.
+
+```
+<bindings>
+    <basicHttpBinding>
+        <binding name="nameOftheWCFbinding" allowCookies="true"
+                 maxReceivedMessageSize="20000000" 
+                 maxBufferSize="20000000"
+                 maxBufferPoolSize="20000000">
+            <readerQuotas maxDepth="32" 
+                 maxArrayLength="200000000"
+                 maxStringContentLength="200000000"/>
+        </binding>
+    </basicHttpBinding>
+</bindings>
+ 
+```
