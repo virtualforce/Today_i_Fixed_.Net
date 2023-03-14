@@ -4,7 +4,7 @@ How pop up Modal in asp.net webforms Gridview.
 # Environment
 Visual Studio 2010, .Net 4, C#, Web Forms
 
-# How you fix it
+# How you fixed it
 When we add the Modal, then mostly the button click event will not trigger Modal pop up in gridview.
 
 # Solution
