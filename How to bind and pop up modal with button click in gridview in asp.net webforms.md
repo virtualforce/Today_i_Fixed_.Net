@@ -1,5 +1,5 @@
 # Problem
-How pop up Modal in asp.net webforms Gridview.
+How to bind and pop up modal with button click in gridview in asp.net webforms?
 
 # Environment
 Visual Studio 2010, .Net 4, C#, Web Forms
