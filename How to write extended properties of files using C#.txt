@@ -1,0 +1,23 @@
+# Problem
+How to write extended properties of files using C# and Microsoft Windows API Code Pack Shell.
+
+# Environment
+Visual Studio 2019, .Net 4.6.2, C#
+
+# How you fix it
+Reading and writing the files extended properties like Tags/Title/Subject/DateTaken is not very simple. I used Microsoft Windows API Code Pack Shell to do the task. It is free and it gives access to all the the properties available for the file.
+
+# Solution
+- Add Microsoft Windows API Code Pack Shell to you project using Nuget
+
+- Use below c# code to write properties to the file
+
+```
+			var file = ShellFile.FromFilePath("FilePath");
+                        
+                            file.Properties.System.Title.Value = Doc.Title.ToUpper();
+                            file.Properties.System.Subject.Value = "Val";
+                            file.Properties.System.Keywords.Value = Doc.Keywords.ToUpper().Split(',');
+                            file.Properties.System.Author.Value = Doc.Author.ToUpper().Split(',');
+                        
+                        

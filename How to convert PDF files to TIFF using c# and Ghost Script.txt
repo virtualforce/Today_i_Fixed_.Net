@@ -1,0 +1,109 @@
+# Problem
+How to convert PDF files to TIFF format using c# and Ghost Script.
+
+# Environment
+Visual Studio 2019, .Net 4.6.2, C#
+
+# How you fix it
+Converting files from PDF to TIFF format is complex problem. Alot of converting dlls are available but they are paid. I used Ghost Script dlls and c# to convert the PDF to Tiff format.
+
+# Solution
+- Reference these dlls in your project.
+	- gsdll32.dll (for 32 bit)
+	- gsdll64.dll (for 64 bit)
+
+- Add Ghostscript.NET from Nuget
+
+```
+public string PdfToTiff(string inputFile)
+        {
+            try
+            {
+                Logger.WriteLog("Converting PDF to Tiff...");
+                Logger.WriteLog(inputFile);
+
+                string strFileNameWithoutExt = Path.GetFileNameWithoutExtension(inputFile);
+
+
+                //select DLL based on arch
+                string NomeGhostscriptDLL;
+                if (Environment.Is64BitProcess)
+                {
+                    NomeGhostscriptDLL = Helper.DLL_64BITS;
+                }
+                else
+                {
+                    NomeGhostscriptDLL = Helper.DLL_32BITS;
+                }
+
+                var xDpi = 100; //set the x DPI
+                var yDpi = 100; //set the y DPI
+                                //var pageNumber = 1; // the pages in a PDF document
+
+                GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(NomeGhostscriptDLL);
+
+                string outputPNGPath = null;
+
+                using (var rasterizer = new GhostscriptRasterizer()) //create an instance for GhostscriptRasterizer
+                {
+                    rasterizer.Open(inputFile, gvi, true); //opens the PDF file for rasterizing
+
+                    Image firstImage = null;
+                    outputPNGPath = Path.Combine(outputTempFolder, string.Format("{0}.TIF", strFileNameWithoutExt));
+
+                    for (int pageNumber = 1; pageNumber <= rasterizer.PageCount; pageNumber++)
+                    {
+                        //set the output image(png's) complete path
+
+
+                        //converts the PDF pages to png's 
+                        var pdf2PNG = rasterizer.GetPage(xDpi, pageNumber);
+
+                        ImageCodecInfo tiff = null;
+
+                        foreach (ImageCodecInfo codec in ImageCodecInfo.GetImageEncoders())
+                        {
+                            if (codec.MimeType == "image/tiff")
+                            {
+                                tiff = codec;
+                                break;
+                            }
+                        }
+
+                        Encoder encoder = Encoder.SaveFlag;
+                        EncoderParameters parameters = new EncoderParameters(1);
+                        parameters.Param[0] = new EncoderParameter(encoder, (long)EncoderValue.MultiFrame);
+
+
+
+                        if (pageNumber == 1)
+                        {
+                            firstImage = pdf2PNG;
+                            pdf2PNG.Save(outputPNGPath, tiff, parameters);
+
+                        }
+                        else
+                        {
+                            parameters.Param[0] = new EncoderParameter(encoder, (long)EncoderValue.FrameDimensionPage);
+                            firstImage.SaveAdd(pdf2PNG, parameters);
+                        }
+
+                    }
+
+                    firstImage.Dispose();
+                }
+
+
+                Logger.WriteLog("File Converted...");
+                Logger.WriteLog(outputPNGPath);
+                return outputPNGPath;
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteErrorLog(inputFile);
+                Logger.WriteErrorLog("Error in PdfToTiff method");
+                Logger.WriteErrorLog(ex.Message);
+            }
+
+            return null;
+        }```
