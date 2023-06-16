@@ -7,6 +7,8 @@ Asp.NET MVC
 
 # How you fix it
 
+To genrate the QR code i used ZXing library in .Net. I installed the library from package manager and rest was very simple. Please follow the demo below to accomplish this.
+
 
 # Solution
 
