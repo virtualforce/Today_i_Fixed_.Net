@@ -1,0 +1,99 @@
+
+# Problem
+How to generate QR Codes using ZXing.NET library? 
+
+# Environment
+Asp.NET MVC
+
+# How you fix it
+
+To genrate the QR code i used ZXing library in .Net. I installed the library from package manager and rest was very simple. Please follow the demo below to accomplish this.
+
+
+# Solution
+
+
+	1. Use below command in Package Manager Console to Install the library 
+		- Install-Package ZXing.Net
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+	2. Front End
+
+	@model Byte[]
+	@using (Html.BeginForm(null, null, FormMethod.Post))
+	{
+    	<table>
+        	<tbody>
+            	<tr>
+                	<td>
+                    		<label>Enter text for creating QR Code</label>
+                	</td>
+                	<td>
+                    		<input type="text" name="qrText" />
+                	</td>
+            	</tr>
+            	<tr>
+                	<td colspan="2">
+                    		<button>Submit</button>
+                	</td>
+            	</tr>
+        	</tbody>
+    	</table>
+	}
+
+	@{
+    		if (Model != null)
+    		{
+        		<h3>QR Code Successfully Generated</h3>
+        		<img src="@String.Format("data:image/png;base64,{0}", Convert.ToBase64String(Model))" />
+    		}
+	}
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+	3. Backend
+
+
+[HttpPost]
+public ActionResult Index(string qrText)
+{
+    Byte[] byteArray;
+    var width = 250; // width of the Qr Code
+    var height = 250; // height of the Qr Code
+    var margin = 0;
+    var qrCodeWriter = new ZXing.BarcodeWriterPixelData
+    {
+        Format = ZXing.BarcodeFormat.QR_CODE,
+        Options = new QrCodeEncodingOptions
+        {
+            Height = height,
+            Width = width,
+            Margin = margin
+        }
+    };
+    var pixelData = qrCodeWriter.Write(qrText);
+
+    // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference
+    // that the pixel data ist BGRA oriented and the bitmap is initialized with RGB
+    using (var bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb))
+    {
+        using (var ms = new MemoryStream())
+        {
+            var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            try
+            {
+                // we assume that the row stride of the bitmap is aligned to 4 byte multiplied by the width of the image
+                System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
+            }
+            finally
+            {
+                bitmap.UnlockBits(bitmapData);
+            }
+            // save to stream as PNG
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            byteArray = ms.ToArray();
+        }
+    }
+    return View(byteArray);
+}
