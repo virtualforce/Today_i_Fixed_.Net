@@ -1,6 +1,7 @@
 # Problem
 Azure Service Bus client can open upto 5000 concurrent connection and a single client. If you need to send/receive a large number of messages to/from service bus connection, you will get `ServiceBusException`
 
+![ServiceBusException](https://github.com/virtualforce/Today_i_Fixed_.Net/assets/36879875/c049fd2c-6885-4142-aca0-4368dac35341)
 
 # Environment
 Visual Studio 2022, .Net 6, C#, Azure Service Bus Client
