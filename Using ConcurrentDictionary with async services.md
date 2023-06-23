@@ -8,6 +8,9 @@ In our scenario, we were using `Dictionary<string,Container>` to cache list of C
 
 The problem arises when multiple Integration Tests running in parallel and doesn't find `Container` in the cache. It then tries to add a new instance of `Container` in cache. However, Dictionary complains that when you're trying to create a new instance, another thread already added a an instance into cache
 
+# Environment
+Visual Studio 2022, .Net 6, C#,
+
 # Solution
 For multi-threaded application, it is recommended to use `ConcurrentDictionary<string, Container>`.
 
