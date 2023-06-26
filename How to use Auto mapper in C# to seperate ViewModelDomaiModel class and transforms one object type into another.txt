@@ -1,0 +1,73 @@
+# Problem
+How to use Auto mapper in C# to seperate ViewModel/DomaiModel class and transforms one object type into another?
+
+# Environment
+C#
+
+# How you fix it
+
+Sometimes in real-time projects, the entity layers deal with the communication from services or DataLayers. To show the data in the application, we need to separate the class as ViewModel/DomainModel and Model class. Therefore, to map entities to model or viewModel, we need AutoMapper.
+
+# Solution
+
+
+AutoMapper in C# is a library used to map data from one object to another. It acts as a mapper between two objects and transforms one object type into another. Below are the steps on how to use Automapper.
+
+
+1. Install AutoMapper from Nuget Package Manager
+
+
+2. Initialize AutoMapper
+
+
+	public class MapperConfig
+    {
+        public static Mapper InitializeAutomapper()
+        {
+            //Provide all the Mapping Configuration
+            var config = new MapperConfiguration(cfg =>
+            {
+                    //Configuring Employee and EmployeeDTO
+                    cfg.CreateMap<Employee, EmployeeDTO>();
+                    //Any Other Mapping Configuration ....
+                });
+            //Create an Instance of Mapper and return that Instance
+            var mapper = new Mapper(config);
+            return mapper;
+        }
+    }
+
+
+
+
+
+3. Use it like below in your code. For Demo purposes I am using Employee as Model and EmployeeDTO as DomainModel/ViewModel Class. Both models have same properties.
+
+
+
+
+
+static void Main(string[] args)
+        {
+            //Create and Populate Employee Object i.e. Source Object
+            Employee emp = new Employee
+            {
+                Name = "James",
+                Salary = 20000,
+                Address = "London",
+                Department = "IT"
+            };
+            
+            //Initializing AutoMapper
+            var mapper = MapperConfig.InitializeAutomapper();
+            //Way1: Specify the Destination Type and to The Map Method pass the Source Object
+            //Now, empDTO1 object will having the same values as emp object
+            var empDTO1 = mapper.Map<EmployeeDTO>(emp);
+            
+            //Way2: Specify the both Source and Destination Type 
+            //and to The Map Method pass the Source Object
+            //Now, empDTO2 object will having the same values as emp object
+            var empDTO2 = mapper.Map<Employee, EmployeeDTO>(emp);
+            Console.WriteLine("Name: " + empDTO1.Name + ", Salary: " + empDTO1.Salary + ", Address: " + empDTO1.Address + ", Department: " + empDTO1.Department);
+            Console.ReadLine();
+        }
