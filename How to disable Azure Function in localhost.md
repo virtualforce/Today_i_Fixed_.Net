@@ -9,7 +9,7 @@ Although you don't have any UI to disable a function locally, yet, it is doable 
 # Solution
 - Go to `local.settings.json` file
 
-- Add a new key ` "AzureWebJobs.<MyFunctionName>.Disabled": "true",`
+- Add a new key ` "AzureWebJobs.<MyFunctionName>.Disabled": "1",`
 
 ```
 {
